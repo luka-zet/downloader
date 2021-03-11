@@ -1,0 +1,17 @@
+{% extends 'downloader/template.html' %}
+{% load crispy_forms_tags %}
+    {% block url_form %}
+        {% if url_form%}
+            <br>
+                <h2>Downloader</h2>
+
+                <div class="form-group">
+                    <form action="channels" method="post">
+                        {% csrf_token %}
+                        {{ url_form|crispy }}
+                        <br>
+                        <input type="submit" class="btn btn-primary" value="Submit">
+                    </form>
+                </div>
+        {% endif %}
+    {% endblock url_form %}

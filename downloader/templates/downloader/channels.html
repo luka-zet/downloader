@@ -1,0 +1,71 @@
+{% extends 'downloader/template.html' %}
+{% block channels_form %}
+<a href="/"> Back to start </a>
+<h2>Channels</h2> 
+<form id="channel-select-form" method="post" action="epg">
+    {% csrf_token %}
+    <select form="channel-select-form" name="channels" id="channels">
+        {% for channel in channels %}
+        <option value="{{ channel.1 }}">{{ channel.1 }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" class="btn btn-primary" value="Get EPG">
+</form>
+{% endblock channels_form %}
+
+{% block epg %}
+<br>
+<div class="crop">
+    {% if logo_url%}
+    <img src={{ logo_url }} alt={{ selected_channel_name }}>
+    {% endif %}
+</div>
+{% regroup epg_for_selected_channel by startday as epg_for_selected_channel_list %}
+{% for element in epg_for_selected_channel_list %}
+<br>
+<b>{{ element.grouper }}</b>
+{% for list in element.list%}
+<form id="download-program" method="post" class="form-inline" action="download" target="_blank">
+    <div class="form-group container">
+        {% csrf_token %}
+
+        {{ list.starthour}}
+        {% if list.episodenum %}
+        {{ list.title }} {{ list.episodenum }}
+        {% else %}
+        {{ list.title }}
+        {% endif %}
+
+
+        {% if list.description %}
+        &nbsp| &nbsp
+        <a data-toggle="collapse" href="#collapse{{forloop.parentloop.counter}}{{forloop.counter}}" role="button"
+            aria-expanded="false" aria-controls="collapseExample">
+            Show description
+        </a>
+        {% endif %}
+        &nbsp| &nbsp
+        <select name="format" class="form-control form-control-sm" style="width:auto" id="format">
+            <option value="mp4">MP4</option>
+            <option value="ts">TS</option>
+        </select>
+        &nbsp;&nbsp
+
+        <input name="archive_url" value={{list.archiveurl}} hidden>
+        <input name="start" value={{list.startepoch}} hidden>
+        <input name="duration" value={{list.duration}} hidden>
+        <input name="title" value="{{list.title}}" hidden>
+        <input type="submit" class="btn btn-primary btn-sm" value="Download">
+
+        <div class="collapse" id="collapse{{forloop.parentloop.counter}}{{forloop.counter}}">
+            <div class="card card-body">
+                {% if list.description %}
+                {{ list.description |truncatewords:"50" }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</form>
+{% endfor %}
+{% endfor %}
+{% endblock epg %}
