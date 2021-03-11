@@ -11,6 +11,9 @@ def check_provider(url):
 
 class UrlForm(forms.Form):
     iptv_url = forms.URLField(label="URL of playlist", required=True,
-                              validators=[check_provider])
+                              max_length=500,
+                              validators=[check_provider],
+                              help_text="Paste tele or plusx m3u",
+                              widget=forms.TextInput(attrs={'size':75, 'max_length':500}))
     ignore_archive_days = forms.BooleanField(
         label="Ignore days archive days from playlist", required=False)
