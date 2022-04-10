@@ -1,6 +1,7 @@
 import time
 import datetime
 import difflib
+import pytz
 import os.path as path
 
 
@@ -35,3 +36,14 @@ def extract_datetime(date, dateformat):
 
 def convert_to_epoch(date, date_format):
     return int(time.mktime(datetime.datetime.strptime(date, date_format).timetuple()))
+
+def convert_date_tz(date_str, time_format, tz):
+    """
+    Parse date like this: '20130429073000 +0300'
+    (python libs unable to process timezone info in +0300 format)
+    Most code was taken from email.util package
+    :return: parsed datetime objectti
+    """
+    date = datetime.datetime.strptime(date_str,time_format)
+    date = date.astimezone(pytz.timezone(tz)).strftime(time_format)
+    return date
