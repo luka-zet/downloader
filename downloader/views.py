@@ -42,7 +42,7 @@ def get_channels(request):
                 if clear_iptv_playlist[i].get('catchup_days'):
                     channel = (clear_iptv_playlist[i])
                     channels.append(channel)
-                    channels_names_once = (channel.get('tvg_name'), channel.get('tvg_name'))
+                    channels_names_once = (channel.get('tvg_id'), channel.get('tvg_name'))
                     channels_names.append(channels_names_once)
             request.session['channels'] = channels
             request.session['channels_names'] = channels_names

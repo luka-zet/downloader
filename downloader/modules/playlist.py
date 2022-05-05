@@ -1,6 +1,6 @@
-import requests
 import re
 import sys
+import requests
 from django.core.exceptions import ValidationError
 
 
@@ -77,11 +77,14 @@ class Playlist:
                 else:
                     catchup_days = None
 
-            m = re.search('catchup-source="(.+?)"', temp)
-            if m:
-                catchup_source = m.group(1)
+            if provider == 'tele-hls' or provider == 'tele-mpeg':
+                m = re.search('catchup-source="(.+?)"', temp)
+                if m:
+                    catchup_source = m.group(1)
+                else:
+                    catchup_source = None
             else:
-                catchup_source = None
+                catchup_source = url_of_channel
 
             m = re.search('tvg-logo="(.+?)"', temp)
             if m:
@@ -113,8 +116,8 @@ class Playlist:
             return link
 
         elif playlist_type == 'plusx':
-            link = url.split('mono-${start}-${timestamp}.m3u8')
-            link = f'{link[0]}archive-{start}-{duration}.{format}{link[1]}'
+            link = url.split('mono.m3u8')
+            link = f'{link[0]}archive-{start}-{duration}.ts{link[1]}'
             return link
 
         else:
@@ -124,20 +127,23 @@ class Playlist:
     def get_channel_settings(self, channel):
         clear_iptv_playlist = self.get_playlist()[0]
         for kanal in clear_iptv_playlist:
-            name = kanal.get('tvg_name')
-            while name == channel:
-                if kanal.get('catchup_source').startswith('http'):
-                    selected_channel_url = kanal.get('catchup_source')
+            if kanal.get('tvg_name') is not None:
+                name = kanal.get('tvg_name')
+            name = kanal.get('tvg_id')
+            if kanal.get('catchup_source') is not None:
+                while name == channel:
+                    if kanal.get('catchup_source').startswith('http'):
+                        selected_channel_url = kanal.get('catchup_source')
+                    else:
+                        selected_channel_url = kanal.get('url')
+                    if kanal.get('logo'):
+                        selected_channel_logo_url = kanal.get('logo')
+                    selected_channel_archive_days = int(kanal.get('catchup_days'))
+                    break
+                try:
+                    selected_channel_url
+                except NameError:
+                    pass
                 else:
-                    selected_channel_url = kanal.get('url')
-                if kanal.get('logo'):
-                    selected_channel_logo_url = kanal.get('logo')
-                selected_channel_archive_days = int(kanal.get('catchup_days'))
-                break
-            try:
-                selected_channel_url
-            except NameError:
-                pass
-            else:
-                break
+                    break
         return selected_channel_url, selected_channel_archive_days, selected_channel_logo_url

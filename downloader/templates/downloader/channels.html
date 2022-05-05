@@ -6,7 +6,7 @@
     {% csrf_token %}
     <select form="channel-select-form" name="channels" id="channels">
         {% for channel in channels %}
-        <option value="{{ channel.1 }}">{{ channel.1 }}</option>
+        <option value="{{ channel.0 }}">{{ channel.1 }}</option>
         {% endfor %}
     </select>
     <input type="submit" class="btn btn-primary" value="Get EPG">
@@ -54,7 +54,7 @@
         <input name="archive_url" value={{list.archiveurl}} hidden>
         <input name="start" value={{list.startepoch}} hidden>
         <input name="duration" value={{list.duration}} hidden>
-        <input name="title" value="{{list.title}}" hidden>
+        <input name="title" value="{{list.title}} - {{list.episodenum}}" hidden>
         <input type="submit" class="btn btn-primary btn-sm" value="Download">
 
         <div class="collapse" id="collapse{{forloop.parentloop.counter}}{{forloop.counter}}">

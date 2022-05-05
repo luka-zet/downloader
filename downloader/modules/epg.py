@@ -54,13 +54,9 @@ class EPG:
 
         for program in epg_from_xml:
             start = program.get('start')
-            #start = datetime.datetime.strptime(start,self.time_format)
-            #start = start.astimezone(pytz.timezone(self.tz)).strftime(self.time_format)
-            start = utils.convert_date_tz(start,self.time_format,self.tz)
+            start = utils.convert_date_tz(start, self.time_format, self.tz)
             stop = program.get('stop')
-            #stop = datetime.datetime.strptime(stop,self.time_format)
-            #stop = stop.astimezone(pytz.timezone(self.tz)).strftime(self.time_format)
-            stop = utils.convert_date_tz(stop,self.time_format,self.tz)
+            stop = utils.convert_date_tz(stop, self.time_format, self.tz)
             start_epoch = utils.convert_to_epoch(start, self.time_format)
             stop_epoch = utils.convert_to_epoch(stop, self.time_format)
             if start_epoch > catchup_ago_epoch:
