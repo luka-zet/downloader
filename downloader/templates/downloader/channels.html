@@ -6,7 +6,7 @@
     {% csrf_token %}
     <select form="channel-select-form" name="channels" id="channels">
         {% for channel in channels %}
-        <option value="{{ channel.0 }}">{{ channel.1 }}</option>
+        <option value="{{ channel.0 }}">{{ channel.0 }}</option>
         {% endfor %}
     </select>
     <input type="submit" class="btn btn-primary" value="Get EPG">

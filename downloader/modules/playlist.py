@@ -2,7 +2,7 @@ import re
 import sys
 import requests
 from django.core.exceptions import ValidationError
-
+from . import epg
 
 class Playlist:
     def __init__(self, playlist_url):
@@ -24,7 +24,7 @@ class Playlist:
         r = requests.get(self.playlist_url)
         list_from_file = r.text
         lines = list_from_file.splitlines()
-
+        chanells_map = epg.EPG('downloader/static/mapa_kanalow.xml')
         cleared_playlist = ''
         for line in lines:
             if line.startswith('#EXTINF'):
@@ -57,15 +57,19 @@ class Playlist:
 
             m = re.search('tvg-id="(.+?)"', temp)
             if m:
-                tvg_id = m.group(1)
+                channel_name = m.group(1)
+                # channel_name = chanells_map.find_channel_name(channel_name)
+                tvg_id = channel_name
             else:
                 tvg_id = None
 
             m = re.search('tvg-name="(.+?)"', temp)
             if m:
-                tvg_name = m.group(1)
+                channel_name = m.group(1)
+                # channel_name = chanells_map.find_channel_name(channel_name)
+                tvg_name = channel_name
             else:
-                tvg_id = None
+                tvg_name = None
 
             m = re.search('catchup-days="(.+?)"', temp)
             if m:

@@ -40,6 +40,7 @@ def get_channels(request):
             channels_names = []
             for i in range(len(clear_iptv_playlist)):
                 if clear_iptv_playlist[i].get('catchup_days'):
+                    print(clear_iptv_playlist[i])
                     channel = (clear_iptv_playlist[i])
                     channels.append(channel)
                     channels_names_once = (channel.get('tvg_id'), channel.get('tvg_name'))

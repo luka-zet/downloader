@@ -24,10 +24,12 @@ class EPG:
         return channel_list
 
     def find_channel_name(self, channel_name):
+        'Find channel name in epg'
+        channel_name = channel_name.lower()
         channels = self.get_channels()
         for channel in channels.items():
             for ch in channel[1]:
-                if ch == channel_name:
+                if channel_name == ch.lower():
                     return channel[0]
 
     # generate xml with epg for specific  channel
