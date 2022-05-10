@@ -51,10 +51,10 @@ def get_channels(request):
             messages.success(request, f'Valid playlist for {iptv_provider}')
             request.session.modified = True
 
-            if not os.path.isfile('downloader/static/epg.xml') or \
-                    utils.is_file_older_than_x_hours('downloader/static/epg.xml', 6):
+            if not os.path.isfile('downloader/static/epg/epg.xml') or \
+                    utils.is_file_older_than_x_hours('downloader/static/epg/epg.xml', 6):
                 file_stream = requests.get(epg_url, stream=True)
-                with open('downloader/static/epg.xml', 'wb') as local_file:
+                with open('downloader/static/epg/epg.xml', 'wb') as local_file:
                     for data in file_stream:
                         local_file.write(data)
 
@@ -74,7 +74,7 @@ def get_epg(request):
         if 'selected_channel_name' not in request.session:
             request.session['selected_channel_name'] = request.POST['channels']
         iptv_playlist = Playlist(request.session['iptv_url'])
-        epg_xml = EPG('downloader/static/epg.xml')
+        epg_xml = EPG('downloader/static/epg/epg.xml')
         selected_channel_name_in_epg = epg_xml.find_channel_name(request.POST['channels'])
         if selected_channel_name_in_epg is None:
             messages.warning(request, f"Cannot find channel {request.POST['channels']}, select proper name")
