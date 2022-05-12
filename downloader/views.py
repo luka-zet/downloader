@@ -40,7 +40,6 @@ def get_channels(request):
             channels_names = []
             for i in range(len(clear_iptv_playlist)):
                 if clear_iptv_playlist[i].get('catchup_days'):
-                    print(clear_iptv_playlist[i])
                     channel = (clear_iptv_playlist[i])
                     channels.append(channel)
                     channels_names_once = (channel.get('tvg_id'), channel.get('tvg_name'))
@@ -60,20 +59,23 @@ def get_channels(request):
 
             return render(request, 'downloader/channels.html', {'url_form': form,
                                                                 'channels': channels_names,
-                                                                'iptv_list': clear_iptv_playlist})
+                                                                'iptv_list': clear_iptv_playlist,
+                                                                'provider': request.session['iptv_provider']})
         else:
             messages.warning(request, 'The form is invalid.')
             return redirect('downloader-home')
     else:
         form = UrlForm
-        return render(request, 'downloader/channels.html', {'url_form': form, 'channels': None})
+        return render(request, 'downloader/channels.html', {'url_form': form,
+                                                            'channels': None,
+                                                            'provider': request.session['iptv_provider']})
 
 
 def get_epg(request):
     if request.method == "POST":
-        if 'selected_channel_name' not in request.session:
-            request.session['selected_channel_name'] = request.POST['channels']
-        iptv_playlist = Playlist(request.session['iptv_url'])
+        #if 'selected_channel_name' not in request.session:
+        request.session['selected_channel_name'] = request.POST['channels']
+        iptv_playlist = Playlist(request.session['iptv_url'])        
         epg_xml = EPG('downloader/static/epg/epg.xml')
         selected_channel_name_in_epg = epg_xml.find_channel_name(request.POST['channels'])
         if selected_channel_name_in_epg is None:
@@ -87,7 +89,8 @@ def get_epg(request):
             iptv_playlist_items = iptv_playlist.get_playlist()
             clear_iptv_playlist = iptv_playlist_items[0]
             return render(request, 'downloader/channels.html', {'channels': proper_channels_list,
-                                                                'iptv_list': clear_iptv_playlist})
+                                                                'iptv_list': clear_iptv_playlist,
+                                                                'provider': request.session['iptv_provider']})
 
         else:
             channel_settings = iptv_playlist.get_channel_settings(request.session['selected_channel_name'])
@@ -107,7 +110,8 @@ def get_epg(request):
             return render(request, 'downloader/channels.html', {'epg_for_selected_channel': epg_for_selected_channel,
                                                                 'channels': channels_names,
                                                                 'selected_channel_name': selected_channel_name,
-                                                                'logo_url': logo_url})
+                                                                'logo_url': logo_url,
+                                                                'provider': request.session['iptv_provider']})
     else:
         return redirect('downloader-home')
 

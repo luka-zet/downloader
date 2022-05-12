@@ -1,12 +1,16 @@
 {% extends 'downloader/template.html' %}
 {% block channels_form %}
 <a href="/"> Back to start </a>
-<h2>Channels</h2> 
+<h2>Channels for {{ provider }}</h2> 
 <form id="channel-select-form" method="post" action="epg">
     {% csrf_token %}
     <select form="channel-select-form" name="channels" id="channels">
         {% for channel in channels %}
-        <option value="{{ channel.0 }}">{{ channel.0 }}</option>
+            {% if provider == 'plusx' %}
+                <option value="{{ channel.0 }}">{{ channel.1 }}</option>
+            {% else %}
+                <option value="{{ channel.1 }}">{{ channel.1 }}</option>
+            {% endif %}
         {% endfor %}
     </select>
     <input type="submit" class="btn btn-primary" value="Get EPG">

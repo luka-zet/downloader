@@ -44,7 +44,7 @@ class EPG:
     # generate list of dictionaries with epg
     def get_epg_for_channel(self, channel, days):
         if days is None:
-            days = 30
+            days = 10
         now_epoch = time.time()
         current_time = datetime.datetime.now()
         catchup_ago = current_time - datetime.timedelta(days=days)

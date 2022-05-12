@@ -130,10 +130,15 @@ class Playlist:
 
     def get_channel_settings(self, channel):
         clear_iptv_playlist = self.get_playlist()[0]
+        provider = self.get_playlist()[1]
         for kanal in clear_iptv_playlist:
-            if kanal.get('tvg_name') is not None:
+            if 'tele' in provider:
                 name = kanal.get('tvg_name')
-            name = kanal.get('tvg_id')
+            else:
+                if kanal.get('tvg_id') is not None:
+                    name = kanal.get('tvg_id')
+                else:
+                    name = kanal.get('tvg_name')
             if kanal.get('catchup_source') is not None:
                 while name == channel:
                     if kanal.get('catchup_source').startswith('http'):
