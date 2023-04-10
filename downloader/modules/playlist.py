@@ -120,7 +120,7 @@ class Playlist:
             return link
 
         elif playlist_type == 'plusx':
-            #link = url.split('mono.m3u8')
+            #stary link link = url.split('mono.m3u8')
             link = url.split('video.m3u8')
             link = f'{link[0]}archive-{start}-{duration}.ts{link[1]}'
             return link
