@@ -2,9 +2,9 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ master ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ master ]
 
 jobs:
 
@@ -13,6 +13,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v2
+    - name: docker login
+      env:
+        DOCKER_USER: ${{secrets.DOCKERHUB_USERNAME}}
+        DOCKER_PASSWORD: ${{secrets.DOCKERHUB_TOKEN}}
+      run: |
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD 
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag iptv_downloader:$(date +%s)
+      run: docker build . --file Dockerfile --tag faust86/iptv_downloader:$(date +%s)
+      
+    - name: Docker Push
+      run: docker push faust86/iptv_downloader
